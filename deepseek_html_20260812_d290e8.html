@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>[1.21.4-Fabric]Rapid Optimization</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #0a0a15;
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: #14142a;
+            padding: 35px;
+            border-radius: 20px;
+            max-width: 750px;
+            width: 100%;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.9);
+            text-align: center;
+            border: 1px solid #2a2a4a;
+        }
+        h1 { 
+            font-size: 24px; 
+            margin-bottom: 5px;
+            background: linear-gradient(135deg, #00b894, #00cec9, #0984e3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .sub { 
+            color: #888; 
+            font-size: 14px; 
+            margin-bottom: 8px;
+        }
+        .badge {
+            display: inline-block;
+            background: #1a2a2a;
+            color: #5fc;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            margin-bottom: 20px;
+            border: 1px solid #2a5a5a;
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        .btn {
+            padding: 12px 22px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            color: #fff;
+        }
+        .btn-primary { background: #0984e3; }
+        .btn-primary:hover { background: #74b9ff; transform: scale(1.03); }
+        .btn-success { background: #2ecc71; }
+        .btn-success:hover { background: #55ef9a; transform: scale(1.03); color: #0a0a15; }
+        .btn-warning { background: #f39c12; }
+        .btn-warning:hover { background: #f1c40f; transform: scale(1.03); color: #0a0a15; }
+        .btn-danger { background: #6c5ce7; }
+        .btn-danger:hover { background: #a29bfe; transform: scale(1.03); }
+        #status {
+            margin-top: 15px;
+            padding: 14px;
+            background: #0d0d20;
+            border-radius: 10px;
+            font-size: 13px;
+            min-height: 50px;
+            border: 1px solid #222244;
+            word-break: break-word;
+        }
+        .progress-bar {
+            margin-top: 12px;
+            height: 6px;
+            background: #1a1a3a;
+            border-radius: 10px;
+            overflow: hidden;
+            display: none;
+        }
+        .progress-bar .fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #00b894, #00cec9, #0984e3);
+            transition: width 0.3s;
+        }
+        .stats {
+            margin-top: 12px;
+            display: flex;
+            justify-content: space-around;
+            font-size: 12px;
+            color: #666;
+        }
+        .stats span { color: #eee; font-weight: 600; }
+        .warning {
+            margin-top: 18px;
+            padding: 12px 15px;
+            background: #1a1525;
+            border-left: 4px solid #0984e3;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #aa88aa;
+            text-align: left;
+            line-height: 1.6;
+        }
+        .warning strong { color: #74b9ff; }
+        .footer {
+            margin-top: 15px;
+            font-size: 11px;
+            color: #445;
+        }
+        .mod-list {
+            background: #1a1a2a;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #aaa;
+            margin-bottom: 15px;
+            border: 1px solid #2a2a44;
+            text-align: left;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .mod-list strong { color: #fff; }
+        .mod-list .count { color: #5fc; font-weight: 600; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>⚡ Rapid Optimization</h1>
+    <p class="sub">[1.21.4-Fabric] Краткий и эффективный оптимизационный модпак</p>
+    <div class="badge">📦 23 файла · Fabric 1.21.4</div>
+    
+    <div class="mod-list">
+        <strong>📋 Состав сборки (<span class="count">23</span> мода):</strong><br>
+        • Sodium + Sodium Extra + Sodium Options API<br>
+        • Iris (шейдеры)<br>
+        • Lithium, ModernFix, Krypton<br>
+        • Entity Culling, More Culling<br>
+        • ImmediatelyFast, Enhanced Block Entities<br>
+        • Noisium, Particle Core, ScalableLux<br>
+        • Fabric API, Fabric Language Kotlin<br>
+        • Cloth Config, Reese's Sodium Options<br>
+        • И другие оптимизации
+    </div>
+
+    <div class="btn-group">
+        <button class="btn btn-primary" onclick="openAllTabs()">🌐 Открыть все ссылки</button>
+        <button class="btn btn-success" onclick="downloadSequentially()">📦 Скачать все (по очереди)</button>
+        <button class="btn btn-warning" onclick="copyAllLinks()">📋 Копировать ссылки</button>
+        <button class="btn btn-danger" onclick="clearStatus()">🗑️ Очистить</button>
+    </div>
+
+    <div class="progress-bar" id="progressBar">
+        <div class="fill" id="progressFill"></div>
+    </div>
+
+    <div id="status">👉 Нажмите кнопку, чтобы начать</div>
+
+    <div class="stats">
+        <div>✅ Скачано: <span id="downloadedCount">0</span></div>
+        <div>❌ Ошибок: <span id="errorCount">0</span></div>
+        <div>📂 Всего: <span id="totalCount">0</span></div>
+    </div>
+
+    <div class="warning">
+        <strong>⚠️ Важно!</strong><br>
+        • "Открыть все ссылки" — откроет 23 вкладки, браузер может зависнуть.<br>
+        • "Скачать все" — загрузит файлы по очереди в папку загрузок.<br>
+        • <strong>Рекомендуемый способ:</strong> используйте <strong>Prism Launcher</strong> и импортируйте .mrpack файл.<br>
+        • Все моды для <strong>Minecraft 1.21.4 Fabric</strong>
+    </div>
+
+    <div class="footer">
+        Сборка <strong>21.4Fa.2.0.0</strong> · Все ссылки с Modrinth
+    </div>
+</div>
+
+<script>
+// ============================================================
+// ВСЕ ССЫЛКИ ИЗ СБОРКИ (обновлено 13.08.2026)
+// ============================================================
+const links = [
+    "https://cdn.modrinth.com/data/g96Z4WVZ/versions/KsC2V6FQ/BadOptimizations-2.4.1-1.21.2-21.5.jar",
+    "https://cdn.modrinth.com/data/9s6osm5g/versions/TJ6o2sr4/cloth-config-17.0.144-fabric.jar",
+    "https://cdn.modrinth.com/data/P7dR8mSH/versions/p96k10UR/fabric-api-0.119.4%2B1.21.4.jar",
+    "https://cdn.modrinth.com/data/Ha28R6CL/versions/ViT4gucI/fabric-language-kotlin-1.13.9%2Bkotlin.2.3.10.jar",
+    "https://cdn.modrinth.com/data/hYykXjDp/versions/KhLnDZk7/fzzy_config-0.7.6%2B1.21.3.jar",
+    "https://cdn.modrinth.com/data/5ZwdcRci/versions/CFJfGS8F/ImmediatelyFast-Fabric-1.8.6%2B1.21.4.jar",
+    "https://cdn.modrinth.com/data/YL57xq9U/versions/Ca054sTe/iris-fabric-1.8.8%2Bmc1.21.4.jar",
+    "https://cdn.modrinth.com/data/QdG47OkI/versions/h47zwBfZ/modelfix-1.21.3-1.10-fabric.jar",
+    "https://cdn.modrinth.com/data/51shyZVL/versions/gWgOJqk8/moreculling-fabric-1.21.4-1.2.10.jar",
+    "https://cdn.modrinth.com/data/KuNKN7d2/versions/9NHdQfkN/noisium-fabric-2.5.0%2Bmc1.21.4.jar",
+    "https://cdn.modrinth.com/data/RSeLon5O/versions/8MSsUBJM/particle_core-0.3.3%2B1.21.4.jar",
+    "https://cdn.modrinth.com/data/Ps1zyz6x/versions/brerLvPf/ScalableLux-0.1.2%2Bfabric.87468e8-all.jar",
+    "https://cdn.modrinth.com/data/Es5v4eyq/versions/dMzvef0h/sodiumoptionsapi-fabric-1.0.10-1.21.4.jar",
+    "https://cdn.modrinth.com/data/Bh37bMuy/versions/KoUrx3jJ/reeses-sodium-options-fabric-1.8.3%2Bmc1.21.4.jar",
+    "https://cdn.modrinth.com/data/NNAgCjsB/versions/hLb4spl6/entityculling-fabric-1.9.5-mc1.21.4.jar",
+    "https://cdn.modrinth.com/data/OVuFYfre/versions/YokFoILZ/enhancedblockentities-0.11.3%2B1.21.4.jar",
+    "https://cdn.modrinth.com/data/fQEb0iXm/versions/Acz3ttTp/krypton-0.2.8.jar",
+    "https://cdn.modrinth.com/data/nmDcB62a/versions/ZGxQddYr/modernfix-fabric-5.20.3%2Bmc1.21.4.jar",
+    "https://cdn.modrinth.com/data/PtjYWJkn/versions/f4TfteNb/sodium-extra-fabric-0.6.1%2Bmc1.21.4.jar",
+    "https://cdn.modrinth.com/data/AANobbMI/versions/c3YkZvne/sodium-fabric-0.6.13%2Bmc1.21.4.jar",
+    "https://cdn.modrinth.com/data/vqqx0QiE/versions/YPgAqjpx/sodiumextras-fabric-1.0.8-1.21.4.jar",
+    "https://cdn.modrinth.com/data/gvQqBUqZ/versions/u8pHPXJl/lithium-fabric-0.15.3%2Bmc1.21.4.jar",
+    "https://cdn.modrinth.com/data/yfDziwn1/versions/kMhmZLcr/SodiumTranslations.zip"
+];
+
+// ============================================================
+// ЛОГИКА
+// ============================================================
+let downloaded = 0, errors = 0;
+const statusEl = document.getElementById('status');
+const progressBar = document.getElementById('progressBar');
+const progressFill = document.getElementById('progressFill');
+const downloadedEl = document.getElementById('downloadedCount');
+const errorEl = document.getElementById('errorCount');
+const totalEl = document.getElementById('totalCount');
+
+totalEl.textContent = links.length;
+
+function setStatus(msg, isError = false) {
+    statusEl.innerHTML = msg;
+    statusEl.style.color = isError ? '#ff6b6b' : '#e0e0e0';
+}
+
+function updateStats() {
+    downloadedEl.textContent = downloaded;
+    errorEl.textContent = errors;
+    const done = downloaded + errors;
+    const pct = Math.min(100, Math.round((done / links.length) * 100));
+    progressFill.style.width = pct + '%';
+}
+
+function clearStatus() {
+    downloaded = 0;
+    errors = 0;
+    progressFill.style.width = '0%';
+    progressBar.style.display = 'none';
+    setStatus('🧹 Очищено');
+    updateStats();
+}
+
+function openAllTabs() {
+    if (!confirm(`Открыть ${links.length} вкладок? Браузер может зависнуть.`)) return;
+    setStatus(`⏳ Открываю ${links.length} вкладок...`);
+    let count = 0;
+    links.forEach((link, i) => {
+        setTimeout(() => {
+            window.open(link, '_blank');
+            count++;
+            setStatus(`🌐 Открыто ${count} из ${links.length}`);
+        }, i * 120);
+    });
+}
+
+function copyAllLinks() {
+    const text = links.join('\n');
+    navigator.clipboard.writeText(text).then(() => {
+        setStatus('✅ Все ссылки скопированы в буфер обмена!');
+    }).catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        ta.remove();
+        setStatus('✅ Все ссылки скопированы!');
+    });
+}
+
+async function downloadSequentially() {
+    if (links.length === 0) return;
+    if (!confirm(`Скачать ${links.length} файлов по очереди? Это займёт несколько минут.`)) return;
+    
+    downloaded = 0;
+    errors = 0;
+    progressBar.style.display = 'block';
+    progressFill.style.width = '0%';
+    updateStats();
+    
+    for (let i = 0; i < links.length; i++) {
+        const link = links[i];
+        const filename = link.split('/').pop() || `file_${i}.jar`;
+        setStatus(`⏳ Скачиваю [${i+1}/${links.length}]: ${filename}`);
+        
+        try {
+            const response = await fetch(link);
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 5000);
+            downloaded++;
+            setStatus(`✅ Скачан [${i+1}/${links.length}]: ${filename}`);
+        } catch (e) {
+            errors++;
+            setStatus(`❌ Ошибка [${i+1}/${links.length}]: ${filename} — ${e.message}`, true);
+        }
+        updateStats();
+        await new Promise(r => setTimeout(r, 400));
+    }
+    
+    progressBar.style.display = 'none';
+    if (errors === 0) {
+        setStatus(`🎉 ВСЕ ${downloaded} файлов успешно скачаны!`);
+    } else {
+        setStatus(`⚠️ Завершено: ${downloaded} скачано, ${errors} ошибок.`, true);
+    }
+}
+</script>
+</body>
+</html>
